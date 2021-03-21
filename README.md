@@ -5,8 +5,8 @@
 EN - Projet n°7 created for OpenClassrooms and Back-end Developpeur Path
 
 ## Built With
-*   [PHP 7.4.9]
-*   [Symfony 5.2.3]
+*   PHP 7.4.9
+*   Symfony 5.2.3
 
 ## Download and Installation
 You need a web development environment like Wampserver (for windows), MAMP (for Mac) or LAMP (for linux).
