@@ -1,5 +1,7 @@
 # Projet-7 (BileMo)
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/a9796cbb1b5045a2a71674dcf3f2edc2)](https://app.codacy.com/gh/riwalenn/Projet-7?utm_source=github.com&utm_medium=referral&utm_content=riwalenn/Projet-7&utm_campaign=Badge_Grade_Settings)
+
 EN - Projet n°7 created for OpenClassrooms and Back-end Developpeur Path
 
 ## Built With
