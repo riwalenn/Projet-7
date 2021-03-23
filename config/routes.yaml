@@ -1,3 +1,11 @@
 #index:
 #    path: /
 #    controller: App\Controller\DefaultController::index
+
+products:
+  path: /api/products
+  controller: App\Controller\ApiProductController::list
+
+product_detail:
+  path: /api/products/{id}
+  controller: App\Controller\ApiProductController::show

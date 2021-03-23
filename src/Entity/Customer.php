@@ -38,7 +38,7 @@ class Customer implements UserInterface
     private $password;
 
     /**
-     * @ORM\ManyToOne(targetEntity=provider::class, inversedBy="customers")
+     * @ORM\ManyToOne(targetEntity=Provider::class, inversedBy="customers")
      * @ORM\JoinColumn(nullable=false)
      */
     private $provider;
@@ -95,12 +95,12 @@ class Customer implements UserInterface
         return $this;
     }
 
-    public function getProvider(): ?provider
+    public function getProvider(): ?Provider
     {
         return $this->provider;
     }
 
-    public function setProvider(?provider $provider): self
+    public function setProvider(?Provider $provider): self
     {
         $this->provider = $provider;
 

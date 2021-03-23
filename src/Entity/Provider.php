@@ -25,12 +25,12 @@ class Provider
     private $name;
 
     /**
-     * @ORM\OneToMany(targetEntity=User::class, mappedBy="provider")
+     * @ORM\OneToMany(targetEntity=User::class, mappedBy="Provider")
      */
     private $users;
 
     /**
-     * @ORM\OneToMany(targetEntity=Customer::class, mappedBy="provider")
+     * @ORM\OneToMany(targetEntity=Customer::class, mappedBy="Provider")
      */
     private $customers;
 

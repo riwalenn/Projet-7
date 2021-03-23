@@ -33,7 +33,7 @@ class User
     private $email;
 
     /**
-     * @ORM\ManyToOne(targetEntity=provider::class, inversedBy="users")
+     * @ORM\ManyToOne(targetEntity=Provider::class, inversedBy="users")
      * @ORM\JoinColumn(nullable=false)
      */
     private $Provider;
