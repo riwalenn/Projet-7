@@ -4,8 +4,8 @@ namespace App\DataFixtures;
 
 use App\Entity\Customer;
 use App\Entity\Product;
-use App\Entity\Provider;
 use App\Entity\User;
+use App\Repository\CustomerRepository;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
@@ -14,13 +14,13 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 class AppFixtures extends Fixture
 {
     private $manager;
-    private $faker;
     private $passwordEncoder;
+    private $cRepo;
 
-    public function __construct(UserPasswordEncoderInterface $passwordEncoder)
+    public function __construct(UserPasswordEncoderInterface $passwordEncoder, CustomerRepository $cRepo)
     {
-        $this->faker = Factory::create('fr_FR');
         $this->passwordEncoder = $passwordEncoder;
+        $this->cRepo = $cRepo;
     }
 
     public function load(ObjectManager $manager)
@@ -34,50 +34,42 @@ class AppFixtures extends Fixture
 
     public function loadUsersAndCustomers()
     {
+        $faker = Factory::create('fr_FR');
         $providers = ["sfr", "orange", "bouygues", "free"];
 
         foreach ($providers as $provider) {
-            $newProvider = new Provider();
-            $newProvider->setName($provider);
-
-            $this->manager->persist($newProvider);
-
-            for ($u = 0; $u < 3; $u++) {
-                $user = new User();
-                $user->setname($this->faker->name)
-                        ->setfirstName($this->faker->firstName)
-                        ->setEmail($this->faker->email)
-                        ->setProvider($newProvider);
-
-                $this->manager->persist($user);
-            }
-
-            for ($c = 0; $c < 3; $c++) {
-                $customer = new Customer();
-                $customer->setUsername($this->faker->userName)
-                            ->setPassword($this->passwordEncoder->encodePassword($customer, $this->faker->password))
-                            ->setEmail($this->faker->email)
-                            ->setProvider($newProvider);
-
-                $this->manager->persist($customer);
-            }
-
             $customer = new Customer();
-            $roleAdmin[] = Customer::ROLE_ADMIN;
-            $customer->setUsername("admin")
-                ->setPassword($this->passwordEncoder->encodePassword($customer, "admin"))
-                ->setEmail("admin@gmail.com")
-                ->setProvider($newProvider);
+            $customer->setUsername($provider)
+                ->setPassword($this->passwordEncoder->encodePassword($customer, $provider))
+                ->setEmail($provider . "@" . $provider . ".com");
 
             $this->manager->persist($customer);
+        }
 
-            $this->manager->flush();
+        $customer = new Customer();
+        $customer->setUsername("orange")
+            ->setPassword($this->passwordEncoder->encodePassword($customer, "orange"))
+            ->setEmail("orange@gmail.com");
+
+        $this->manager->persist($customer);
+        $this->manager->flush();
+
+        $customers = $this->cRepo->findAll();
+        foreach ($customers as $customer) {
+            for ($i = 0; $i < 5; $i++) {
+                $user = new User();
+                $user->setname($faker->name)
+                    ->setfirstName($faker->firstName)
+                    ->setCustomer($customer)
+                    ->setEmail($faker->email);
+                $this->manager->persist($user);
+            }
         }
     }
 
     public function loadProducts()
     {
-        for ($p = 0; $p < 20; $p++) {
+        for ($i = 0; $i < 20; $i++) {
 
             $processor_names = ["A14 Bionic", "A13 Bionic", "Snapdragon 888", "Kirin 9000", "Exynos 2100", "Dimensity 1000+", "Snapdragon 870", "Kirin 9000E"];
             $colors = ["Argent", "Argent", "Blanc", "Bleu", "Bronze", "Gris", "Jaune", "Noir", "Or", "Orange", "Pourpre", "Rose", "Rouge", "Vert", "Violet", "Autres"];
@@ -94,11 +86,11 @@ class AppFixtures extends Fixture
             $xiaomi_denomination = "Xiaomi ".array_rand(array_flip($shortnames_xiaomi));
             $huawei_denomination = "Huawei ".array_rand(array_flip($shortnames_huawei));
 
-            $arrayFakeDenomination = array($samsung_denomination, $apple_denomination, $sony_denomination, $xiaomi_denomination, $huawei_denomination);
+            $arrayDenomination = array($samsung_denomination, $apple_denomination, $sony_denomination, $xiaomi_denomination, $huawei_denomination);
             $processor_name = array_rand(array_flip($processor_names));
             $color = array_rand(array_flip($colors));
             $ram = array_rand(array_flip($ram_memories));
-            $denomination = array_rand(array_flip($arrayFakeDenomination)) . " " . $color . " " . $ram;
+            $denomination = array_rand(array_flip($arrayDenomination)) . " " . $color . " " . $ram;
             $manufacturerArr = explode(' ', trim($denomination));
             $manufacturer = $manufacturerArr[0];
 
