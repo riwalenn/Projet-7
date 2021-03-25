@@ -19,7 +19,7 @@ class ApiProductController extends AbstractController
         $products = $repo->findAll();
 
         $result = $serializer->serialize($products, 'json');
-        return new JsonResponse($result, 200, [], true);
+        return new JsonResponse($result, Response::HTTP_OK, [], true);
    }
 
     /**

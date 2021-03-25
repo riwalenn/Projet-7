@@ -33,10 +33,10 @@ class User
     private $email;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Provider::class, inversedBy="users")
+     * @ORM\ManyToOne(targetEntity=Customer::class, inversedBy="users")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $Provider;
+    private $Customer;
 
     public function getId(): ?int
     {
@@ -79,14 +79,14 @@ class User
         return $this;
     }
 
-    public function getProvider(): ?Provider
+    public function getCustomer(): ?Customer
     {
-        return $this->provider;
+        return $this->Customer;
     }
 
-    public function setProvider(?Provider $Provider): self
+    public function setCustomer(?Customer $Customer): self
     {
-        $this->Provider = $Provider;
+        $this->Customer = $Customer;
 
         return $this;
     }

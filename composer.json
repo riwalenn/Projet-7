@@ -10,6 +10,7 @@
         "ext-json": "*",
         "doctrine/annotations": "^1.12",
         "doctrine/doctrine-bundle": "^2.3",
+        "doctrine/doctrine-migrations-bundle": "^3.0",
         "phpdocumentor/reflection-docblock": "^5.2",
         "sensio/framework-extra-bundle": "^6.1",
         "symfony/console": "5.2.*",

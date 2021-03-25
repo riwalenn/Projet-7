@@ -4,8 +4,8 @@ namespace App\DataFixtures;
 
 use App\Entity\Customer;
 use App\Entity\Product;
-use App\Entity\Provider;
 use App\Entity\User;
+use App\Repository\CustomerRepository;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
@@ -16,11 +16,13 @@ class AppFixtures extends Fixture
     private $manager;
     private $faker;
     private $passwordEncoder;
+    private $cRepo;
 
-    public function __construct(UserPasswordEncoderInterface $passwordEncoder)
+    public function __construct(UserPasswordEncoderInterface $passwordEncoder, CustomerRepository $cRepo)
     {
         $this->faker = Factory::create('fr_FR');
         $this->passwordEncoder = $passwordEncoder;
+        $this->cRepo = $cRepo;
     }
 
     public function load(ObjectManager $manager)
@@ -37,41 +39,33 @@ class AppFixtures extends Fixture
         $providers = ["sfr", "orange", "bouygues", "free"];
 
         foreach ($providers as $provider) {
-            $newProvider = new Provider();
-            $newProvider->setName($provider);
-
-            $this->manager->persist($newProvider);
-
-            for ($u = 0; $u < 3; $u++) {
-                $user = new User();
-                $user->setname($this->faker->name)
-                        ->setfirstName($this->faker->firstName)
-                        ->setEmail($this->faker->email)
-                        ->setProvider($newProvider);
-
-                $this->manager->persist($user);
-            }
-
-            for ($c = 0; $c < 3; $c++) {
-                $customer = new Customer();
-                $customer->setUsername($this->faker->userName)
-                            ->setPassword($this->passwordEncoder->encodePassword($customer, $this->faker->password))
-                            ->setEmail($this->faker->email)
-                            ->setProvider($newProvider);
-
-                $this->manager->persist($customer);
-            }
-
             $customer = new Customer();
-            $roleAdmin[] = Customer::ROLE_ADMIN;
-            $customer->setUsername("admin")
-                ->setPassword($this->passwordEncoder->encodePassword($customer, "admin"))
-                ->setEmail("admin@gmail.com")
-                ->setProvider($newProvider);
+            $customer->setUsername($provider)
+                ->setPassword($this->passwordEncoder->encodePassword($customer, $provider))
+                ->setEmail($provider . "@" . $provider . ".com");
 
             $this->manager->persist($customer);
+        }
 
-            $this->manager->flush();
+        $customer = new Customer();
+        $roleAdmin[] = Customer::ROLE_ADMIN;
+        $customer->setUsername("orange")
+            ->setPassword($this->passwordEncoder->encodePassword($customer, "orange"))
+            ->setEmail("orange@gmail.com");
+
+        $this->manager->persist($customer);
+        $this->manager->flush();
+
+        $customers = $this->cRepo->findAll();
+        foreach ($customers as $customer) {
+            for ($u = 0; $u < 5; $u++) {
+                $user = new User();
+                $user->setname($this->faker->name)
+                    ->setfirstName($this->faker->firstName)
+                    ->setCustomer($customer)
+                    ->setEmail($this->faker->email);
+                $this->manager->persist($user);
+            }
         }
     }
 

@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\CustomerRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -38,20 +40,20 @@ class Customer implements UserInterface
     private $password;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Provider::class, inversedBy="customers")
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private $provider;
-
-    /**
      * @ORM\Column(type="simple_array")
      */
     private $roles;
+
+    /**
+     * @ORM\OneToMany(targetEntity=User::class, mappedBy="Customer")
+     */
+    private $users;
 
     public function __construct()
     {
         $role[] = self::DEFAULT_ROLE;
         $this->roles = $role;
+        $this->users = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -95,18 +97,6 @@ class Customer implements UserInterface
         return $this;
     }
 
-    public function getProvider(): ?Provider
-    {
-        return $this->provider;
-    }
-
-    public function setProvider(?Provider $provider): self
-    {
-        $this->provider = $provider;
-
-        return $this;
-    }
-
     public function getRoles(): ?array
     {
         return $this->roles;
@@ -127,5 +117,35 @@ class Customer implements UserInterface
     public function eraseCredentials()
     {
         // TODO: Implement eraseCredentials() method.
+    }
+
+    /**
+     * @return Collection|User[]
+     */
+    public function getUsers(): Collection
+    {
+        return $this->users;
+    }
+
+    public function addUser(User $user): self
+    {
+        if (!$this->users->contains($user)) {
+            $this->users[] = $user;
+            $user->setCustomer($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUser(User $user): self
+    {
+        if ($this->users->removeElement($user)) {
+            // set the owning side to null (unless already changed)
+            if ($user->getCustomer() === $this) {
+                $user->setCustomer(null);
+            }
+        }
+
+        return $this;
     }
 }
