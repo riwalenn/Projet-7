@@ -9,3 +9,11 @@ products:
 product_detail:
   path: /api/products/{id}
   controller: App\Controller\ApiProductController::show
+
+users:
+  path: /api/customers/{id}
+  controller: App\Controller\ApiCustomerController::list
+
+user_detail:
+  path: /api/customers/users/{id}
+  controller: App\Controller\ApiCustomerController::show
