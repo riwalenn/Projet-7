@@ -29,12 +29,12 @@ class ApiCustomerController extends AbstractController
 
     /**
      * @Route("/api/customers/users/{id}", name="api_user_show", methods={"GET"})
-     * @param Customer $customer
+     * @param User $user
      * @param UserRepository $repository
      * @return JsonResponse
      */
-    public function show(Customer $customer, UserRepository $repository)
+    public function show(User $user, UserRepository $repository)
     {
-        return $this->json($repository->findBy(array('id' => $customer->getId())), Response::HTTP_OK, [], ['groups' => 'user:read']);
+        return $this->json($repository->findBy(array('id' => $user->getId())), Response::HTTP_OK, [], ['groups' => 'user:read']);
     }
 }

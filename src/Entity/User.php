@@ -15,25 +15,25 @@ class User
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"user:read", "users:list"})
+     * @Groups({"user:read"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"user:read", "users:list"})
+     * @Groups({"user:read"})
      */
     private $name;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"user:read", "users:list"})
+     * @Groups({"user:read"})
      */
     private $firstName;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"user:read", "users:list"})
+     * @Groups({"user:read"})
      */
     private $email;
 
