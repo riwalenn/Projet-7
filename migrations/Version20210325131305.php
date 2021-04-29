@@ -24,7 +24,7 @@ final class Version20210325131305 extends AbstractMigration
         $this->addSql('DROP INDEX IDX_81398E09A76ED395 ON customer');
         $this->addSql('ALTER TABLE customer DROP user_id');
         $this->addSql('ALTER TABLE user ADD customer_id INT NOT NULL');
-        $this->addSql('ALTER TABLE user ADD CONSTRAINT FK_8D93D6499395C3F3 FOREIGN KEY (customer_id) REFERENCES customer (id)');
+        $this->addSql('ALTER TABLE user ADD CONSTRAINT FK_8D93D6499395C3F3 FOREIGN KEY (customer_id) REFERENCES customer (id) ON DELETE CASCADE ON UPDATE CASCADE');
         $this->addSql('CREATE INDEX IDX_8D93D6499395C3F3 ON user (customer_id)');
         $this->addSql('ALTER TABLE customer DROP FOREIGN KEY FK_81398E09A53A8AA');
         $this->addSql('ALTER TABLE user DROP FOREIGN KEY FK_8D93D649A53A8AA');

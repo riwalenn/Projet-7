@@ -15,7 +15,6 @@ use Symfony\Component\Serializer\Annotation\Groups;
 class Customer implements UserInterface
 {
     const ROLE_USER = 'ROLE_USER';
-    const DEFAULT_ROLE = "ROLE_USER";
 
     /**
      * @ORM\Id
@@ -47,15 +46,13 @@ class Customer implements UserInterface
     private $roles;
 
     /**
-     * @ORM\OneToMany(targetEntity=User::class, mappedBy="Customer")
+     * @ORM\OneToMany(targetEntity=User::class, mappedBy="customer")
      * @Groups({"users:list"})
      */
     private $users;
 
     public function __construct()
     {
-        $role[] = self::DEFAULT_ROLE;
-        $this->roles = $role;
         $this->users = new ArrayCollection();
     }
 
@@ -130,6 +127,10 @@ class Customer implements UserInterface
         return $this->users;
     }
 
+    /**
+     * @param User $user
+     * @return Collection|User[]
+     */
     public function addUser(User $user): self
     {
         if (!$this->users->contains($user)) {
@@ -140,6 +141,10 @@ class Customer implements UserInterface
         return $this;
     }
 
+    /**
+     * @param User $user
+     * @return Collection|User[]
+     */
     public function removeUser(User $user): self
     {
         if ($this->users->removeElement($user)) {
