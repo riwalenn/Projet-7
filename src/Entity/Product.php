@@ -20,26 +20,31 @@ class Product
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"product:read"})
      */
     private $denomination;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"product:read"})
      */
     private $manufacturer;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"product:read"})
      */
     private $processorName;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"product:read"})
      */
     private $color;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"product:read"})
      */
     private $ramMemory;
 

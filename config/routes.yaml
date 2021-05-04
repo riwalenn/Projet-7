@@ -16,4 +16,8 @@ users:
 
 user_detail:
   path: /api/customers/users/{id}
-  controller: App\Controller\ApiCustomerController::show
+  controller: App\Controller\ApiUserController::show
+
+user_create:
+  path: /api/customers/{id}/users
+  controller: App\Controller\ApiUserController::create
