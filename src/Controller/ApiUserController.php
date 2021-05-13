@@ -16,6 +16,17 @@ use Symfony\Component\Serializer\SerializerInterface;
 class ApiUserController extends AbstractController
 {
     /**
+     * Route("/api/users", name="api_users", methods={"GET"})
+     *
+     * @param UserRepository $repository
+     * @return JsonResponse
+     */
+    public function list(UserRepository $repository)
+    {
+        return $this->json($repository->findBy(["customer" => $this->getUser()]), Response::HTTP_OK, [], ['groups' => ['users:list', 'user:read']]);
+    }
+
+    /**
      * @Route("/api/users/{id}", name="api_user_show", methods={"GET"})
      *
      * @param User $user
@@ -24,7 +35,7 @@ class ApiUserController extends AbstractController
      */
     public function show(User $user, UserRepository $repository)
     {
-        return $this->json($repository->findBy(array('id' => $user->getId())), Response::HTTP_OK, [], ['groups' => ['user:read', 'users:list']]);
+        return $this->json($repository->findBy(['id' => $user->getId()]), Response::HTTP_OK, [], ['groups' => ['user:read', 'users:list']]);
     }
 
     /**
@@ -42,7 +53,7 @@ class ApiUserController extends AbstractController
         $user->setCustomer($this->getUser());
         $manager->persist($user);
         $manager->flush();
-        return new JsonResponse(null, Response::HTTP_CREATED, ["location" => $this->generateUrl('api_user_show', ["id" => $user->getId(), UrlGeneratorInterface::ABSOLUTE_URL])]);
+        return $this->json("Le nouvel utilisateur a bien été créé !", Response::HTTP_CREATED, ["location" => $this->generateUrl('api_user_show', ["id" => $user->getId(), UrlGeneratorInterface::ABSOLUTE_URL])]);
     }
 
     /**
@@ -50,6 +61,7 @@ class ApiUserController extends AbstractController
      *
      * @param User $user
      * @param EntityManagerInterface $manager
+     * @return JsonResponse
      */
     public function delete(User $user, EntityManagerInterface $manager)
     {
