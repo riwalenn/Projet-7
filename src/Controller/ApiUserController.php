@@ -35,7 +35,10 @@ class ApiUserController extends AbstractController
      */
     public function show(User $user, UserRepository $repository)
     {
-        return $this->json($repository->findBy(['id' => $user->getId()]), Response::HTTP_OK, [], ['groups' => ['user:read', 'users:list']]);
+        if ($user->getCustomer() == $this->getUser()) {
+            return $this->json($repository->findBy(['id' => $user->getId()]), Response::HTTP_OK, [], ['groups' => ['user:read', 'users:list']]);
+        }
+        return $this->json("Vous n'avez pas les autorisations pour voir le détail de cet utilisateur !", Response::HTTP_UNAUTHORIZED);
     }
 
     /**
