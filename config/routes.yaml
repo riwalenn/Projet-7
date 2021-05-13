@@ -15,9 +15,13 @@ users:
   controller: App\Controller\ApiCustomerController::list
 
 user_detail:
-  path: /api/customers/users/{id}
+  path: /api/users/{id}
   controller: App\Controller\ApiUserController::show
 
 user_create:
-  path: /api/customers/{id}/users
+  path: /api/users
   controller: App\Controller\ApiUserController::create
+
+user_delete:
+  path: /api/users/{id}
+  controller: App\Controller\ApiUserController::delete
