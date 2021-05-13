@@ -9,6 +9,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Serializer\SerializerInterface;
@@ -53,8 +54,12 @@ class ApiUserController extends AbstractController
      */
     public function delete(User $user, EntityManagerInterface $manager)
     {
-        $manager->remove($user);
-        $manager->flush();
-        return $this->json("L'utilisateur a bien été supprimé !", Response::HTTP_ACCEPTED);
+        if ($user->getCustomer() == $this->getUser()) {
+            $manager->remove($user);
+            $manager->flush();
+            return $this->json("L'utilisateur a bien été supprimé !", Response::HTTP_ACCEPTED);
+        } else {
+            return $this->json("Vous n'avez pas les autorisations pour supprimer cet utilisateur !", Response::HTTP_UNAUTHORIZED);
+        }
     }
 }
