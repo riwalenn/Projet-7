@@ -18,7 +18,7 @@ class ApiCustomerController extends AbstractController
      * @param SerializerInterface $serializer
      * @return JsonResponse
      */
-    public function list(Customer $customer, CustomerRepository $repository, SerializerInterface $serializer)
+    public function list(Customer $customer, CustomerRepository $repository)
     {
         return $this->json($repository->findBy(array('id' => $customer->getId())), Response::HTTP_OK, [], ['groups' => ['users:list', 'user:read']]);
     }

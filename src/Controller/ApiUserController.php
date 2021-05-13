@@ -35,7 +35,7 @@ class ApiUserController extends AbstractController
      * @param SerializerInterface $serializer
      * @return JsonResponse
      */
-    public function create(Request $request, EntityManagerInterface $manager, SerializerInterface $serializer, User $user): JsonResponse
+    public function create(Request $request, EntityManagerInterface $manager, SerializerInterface $serializer): JsonResponse
     {
         $data = $request->getContent();
         $user = $serializer->deserialize($data, User::class, 'json');
@@ -55,7 +55,7 @@ class ApiUserController extends AbstractController
      * @param User $user
      * @return JsonResponse
      */
-    public function delete(Request $request, EntityManagerInterface $manager, UserRepository $repository, User $user)
+    public function delete(Request $request, EntityManagerInterface $manager)
     {
         $manager->remove($request);
         return new JsonResponse(null, Response::HTTP_ACCEPTED, []);
