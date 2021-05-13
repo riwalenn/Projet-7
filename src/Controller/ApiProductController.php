@@ -17,7 +17,7 @@ class ApiProductController extends AbstractController
      */
    public function list(ProductRepository $repo)
    {
-       return $this->json($repo->findAll(), Response::HTTP_OK, []);
+       return $this->json($repo->findAll(), Response::HTTP_OK, [], ['groups' => ['Default', 'product:read']]);
    }
 
     /**
@@ -27,6 +27,6 @@ class ApiProductController extends AbstractController
      */
     public function show(Product $product)
     {
-        return $this->json($product, Response::HTTP_OK, []);
+        return $this->json($product, Response::HTTP_OK, [], ['groups' => ['Default', 'product:read']]);
     }
 }
