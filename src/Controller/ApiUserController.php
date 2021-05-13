@@ -57,8 +57,7 @@ class ApiUserController extends AbstractController
             $manager->remove($user);
             $manager->flush();
             return $this->json("L'utilisateur a bien été supprimé !", Response::HTTP_ACCEPTED);
-        } else {
-            return $this->json("Vous n'avez pas les autorisations pour supprimer cet utilisateur !", Response::HTTP_UNAUTHORIZED);
         }
+        return $this->json("Vous n'avez pas les autorisations pour supprimer cet utilisateur !", Response::HTTP_UNAUTHORIZED);
     }
 }
