@@ -39,25 +39,22 @@ class ApiUserController extends AbstractController
     {
         $data = $request->getContent();
         $user = $serializer->deserialize($data, User::class, 'json');
-        //$user->setCustomer($this->getUser());
+        $user->setCustomer($this->getUser());
         $manager->persist($user);
         $manager->flush();
-
-        return new JsonResponse(null, Response::HTTP_CREATED, ["location" => $this->generateUrl('api_user_show', ["id" => $user->getId(), UrlGeneratorInterface::ABSOLUTE_URL])], true);
+        return new JsonResponse(null, Response::HTTP_CREATED, ["location" => $this->generateUrl('api_user_show', ["id" => $user->getId(), UrlGeneratorInterface::ABSOLUTE_URL])]);
     }
 
     /**
      * @Route("/api/users/{id}", name="api_user_delete", methods={"DELETE"})
      *
-     * @param Request $request
-     * @param EntityManagerInterface $manager
-     * @param UserRepository $repository
      * @param User $user
-     * @return JsonResponse
+     * @param EntityManagerInterface $manager
      */
-    public function delete(Request $request, EntityManagerInterface $manager)
+    public function delete(User $user, EntityManagerInterface $manager)
     {
-        $manager->remove($request);
-        return new JsonResponse(null, Response::HTTP_ACCEPTED, []);
+        $manager->remove($user);
+        $manager->flush();
+        return $this->json("L'utilisateur a bien été supprimé !", Response::HTTP_ACCEPTED);
     }
 }
