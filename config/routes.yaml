@@ -27,3 +27,8 @@ user_create:
 user_delete:
   path: /api/users/{id}
   controller: App\Controller\ApiUserController::delete
+
+app.swagger_ui:
+  path: /api/doc
+  methods: GET
+  defaults: { _controller: nelmio_api_doc.controller.swagger_ui }

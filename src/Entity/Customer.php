@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
+use OpenApi\Annotations as OA;
 
 /**
  * @ORM\Entity(repositoryClass=CustomerRepository::class)
@@ -20,34 +21,46 @@ class Customer implements UserInterface
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     *
+     * @OA\Property(description="Unique identifier of the customer", type="integer")
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Groups({"users:list"})
+     *
+     * @OA\Property(description="Username of the customer", type="string")
      */
     private $username;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Groups({"users:list"})
+     *
+     * @OA\Property(description="Email of the customer", type="email")
      */
     private $email;
 
     /**
      * @ORM\Column(type="string", length=255)
+     *
+     * @OA\Property(description="Password of the customer", type="string")
      */
     private $password;
 
     /**
      * @ORM\Column(type="simple_array")
+     *
+     * @OA\Property(description="Role of the customer", type="simple_array")
      */
     private $roles;
 
     /**
      * @ORM\OneToMany(targetEntity=User::class, mappedBy="customer")
      * @Groups({"users:list"})
+     *
+     * @OA\Property(description="Users of the customer")
      */
     private $users;
 

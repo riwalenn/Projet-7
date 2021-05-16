@@ -7,6 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use JMS\Serializer\Annotation as Serializer;
 use Hateoas\Configuration\Annotation as Hateoas;
+use OpenApi\Annotations as OA;
 
 /**
  * @Serializer\XmlRoot("Product")
@@ -34,36 +35,48 @@ class Product
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     *
+     * @OA\Property(description="Unique identifier of the product", type="integer")
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Groups({"product:read"})
+     *
+     * @OA\Property(description="denomination of the product", type="string")
      */
     private $denomination;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Groups({"product:read"})
+     *
+     * @OA\Property(description="Manufacturer of the product", type="string")
      */
     private $manufacturer;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Groups({"product:read"})
+     *
+     * @OA\Property(description="Processor of the product", type="string")
      */
     private $processorName;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Groups({"product:read"})
+     *
+     * @OA\Property(description="Color of the product", type="string")
      */
     private $color;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Groups({"product:read"})
+     *
+     * @OA\Property(description="Ram Memory of the product", type="string")
      */
     private $ramMemory;
 

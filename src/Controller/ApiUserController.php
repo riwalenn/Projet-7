@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Customer;
 use App\Entity\User;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -12,11 +13,25 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Serializer\SerializerInterface;
+use Nelmio\ApiDocBundle\Annotation\Model;
+use Nelmio\ApiDocBundle\Annotation\Security;
+use OpenApi\Annotations as OA;
 
 class ApiUserController extends AbstractController
 {
     /**
      * Route("/api/users", name="api_users", methods={"GET"})
+     *
+     *
+     * @OA\Response(
+     *      response=200,
+     *      description="returns JSON result, the list of users a customer",
+     *      @OA\JsonContent(
+     *          type="array",
+     *          @OA\Items(ref=@Model(type=Customer::class, groups={"Default", "users:list", "user:read"}))
+     *      ),
+     * )
+     * @OA\Tag(name="User")
      *
      * @param UserRepository $repository
      * @return JsonResponse
@@ -28,6 +43,8 @@ class ApiUserController extends AbstractController
 
     /**
      * @Route("/api/users/{id}", name="api_user_show", methods={"GET"})
+     *
+     * @OA\Tag(name="User")
      *
      * @param User $user
      * @param UserRepository $repository
@@ -47,16 +64,23 @@ class ApiUserController extends AbstractController
      * @param Request $request
      * @param EntityManagerInterface $manager
      * @param SerializerInterface $serializer
+     * @param UrlGeneratorInterface $urlGenerator
      * @return JsonResponse
      */
-    public function create(Request $request, EntityManagerInterface $manager, SerializerInterface $serializer): JsonResponse
+    public function create(Request $request, EntityManagerInterface $manager, SerializerInterface $serializer, UrlGeneratorInterface $urlGenerator): JsonResponse
     {
         $data = $request->getContent();
+        /** @var User $user */
         $user = $serializer->deserialize($data, User::class, 'json');
         $user->setCustomer($this->getUser());
         $manager->persist($user);
         $manager->flush();
-        return $this->json("Le nouvel utilisateur a bien été créé !", Response::HTTP_CREATED, ["location" => $this->generateUrl('api_user_show', ["id" => $user->getId(), UrlGeneratorInterface::ABSOLUTE_URL])]);
+        return new JsonResponse(
+            $serializer->serialize($user, "json", ["groups" => ['users:list', 'user:read']]),
+            JsonResponse::HTTP_CREATED,
+            ["Location" => $urlGenerator->generate("api_user_show", ["id" => $user->getid()])],
+            true
+        );
     }
 
     /**
