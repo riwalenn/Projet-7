@@ -6,6 +6,7 @@ use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use OpenApi\Annotations as OA;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
@@ -27,6 +28,7 @@ class User
      * @Groups({"user:read", "user:write"})
      *
      * @OA\Property(description="Name of the user", type="string")
+     * @Assert\Length(min=4, minMessage="Le nom doit au moins contenir {{ limit }} caractères")
      */
     private $name;
 
@@ -35,6 +37,7 @@ class User
      * @Groups({"user:read", "user:write"})
      *
      * @OA\Property(description="Firstname of the user", type="string")
+     * @Assert\Length(min=4, minMessage="Le prénom doit au moins contenir {{ limit }} caractères")
      */
     private $firstName;
 
@@ -43,6 +46,7 @@ class User
      * @Groups({"user:read", "user:write"})
      *
      * @OA\Property(description="Email of the user", type="email")
+     * @Assert\NotBlank(message="l'email ne peut être vide.")
      */
     private $email;
 
