@@ -16,6 +16,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use Nelmio\ApiDocBundle\Annotation\Security;
 use OpenApi\Annotations as OA;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class ApiUserController extends AbstractController
 {
@@ -67,11 +68,15 @@ class ApiUserController extends AbstractController
      * @param UrlGeneratorInterface $urlGenerator
      * @return JsonResponse
      */
-    public function create(Request $request, EntityManagerInterface $manager, SerializerInterface $serializer, UrlGeneratorInterface $urlGenerator): JsonResponse
+    public function create(Request $request, EntityManagerInterface $manager, SerializerInterface $serializer, UrlGeneratorInterface $urlGenerator, ValidatorInterface $validator): JsonResponse
     {
         $data = $request->getContent();
         /** @var User $user */
         $user = $serializer->deserialize($data, User::class, 'json');
+        $errors = $validator->validate($user);
+        if ($errors->count() > 0) {
+            return new JsonResponse($serializer->serialize($errors, 'json'), Response::HTTP_BAD_REQUEST, [], true);
+        }
         $user->setCustomer($this->getUser());
         $manager->persist($user);
         $manager->flush();
@@ -95,8 +100,8 @@ class ApiUserController extends AbstractController
         if ($user->getCustomer() == $this->getUser()) {
             $manager->remove($user);
             $manager->flush();
-            return $this->json("L'utilisateur a bien été supprimé !", Response::HTTP_ACCEPTED);
+            return $this->json("La donnée a bien été supprimée", Response::HTTP_OK);
         }
-        return $this->json("Vous n'avez pas les autorisations pour supprimer cet utilisateur !", Response::HTTP_UNAUTHORIZED);
+        return $this->json("Vous n'avez pas les autorisations pour supprimer cet utilisateur !", Response::HTTP_METHOD_NOT_ALLOWED);
     }
 }
