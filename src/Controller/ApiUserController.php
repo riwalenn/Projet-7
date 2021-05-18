@@ -2,59 +2,48 @@
 
 namespace App\Controller;
 
-use App\Entity\Customer;
 use App\Entity\User;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use JMS\Serializer\SerializerInterface;
+use JMS\Serializer\SerializationContext;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Component\Serializer\SerializerInterface;
-use Nelmio\ApiDocBundle\Annotation\Model;
-use Nelmio\ApiDocBundle\Annotation\Security;
-use OpenApi\Annotations as OA;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+
 
 class ApiUserController extends AbstractController
 {
     /**
      * Route("/api/users", name="api_users", methods={"GET"})
      *
-     *
-     * @OA\Response(
-     *      response=200,
-     *      description="returns JSON result, the list of users a customer",
-     *      @OA\JsonContent(
-     *          type="array",
-     *          @OA\Items(ref=@Model(type=Customer::class, groups={"Default", "users:list", "user:read"}))
-     *      ),
-     * )
-     * @OA\Tag(name="User")
-     *
      * @param UserRepository $repository
+     * @param SerializerInterface $serializer
      * @return JsonResponse
      */
-    public function list(UserRepository $repository)
+    public function list(UserRepository $repository, SerializerInterface $serializer): JsonResponse
     {
-        return $this->json($repository->findBy(["customer" => $this->getUser()]), Response::HTTP_OK, [], ['groups' => ['users:list', 'user:read']]);
+        $jsonContent = $serializer->serialize($repository->findBy(["customer" => $this->getUser()]), 'json', SerializationContext::create()->setGroups(['Default', 'users:list']));
+        return new JsonResponse($jsonContent, Response::HTTP_OK, [], true);
     }
 
     /**
      * @Route("/api/users/{id}", name="api_user_show", methods={"GET"})
      *
-     * @OA\Tag(name="User")
-     *
      * @param User $user
      * @param UserRepository $repository
+     * @param SerializerInterface $serializer
      * @return JsonResponse
      */
-    public function show(User $user, UserRepository $repository)
+    public function show(User $user, UserRepository $repository, SerializerInterface $serializer): JsonResponse
     {
         if ($user->getCustomer() == $this->getUser()) {
-            return $this->json($repository->findBy(['id' => $user->getId()]), Response::HTTP_OK, [], ['groups' => ['user:read', 'users:list']]);
+            $jsonContent = $serializer->serialize($repository->findBy(['id' => $user->getId()]), 'json', SerializationContext::create()->setGroups(['Default', 'users:list']));
+            return new JsonResponse($jsonContent, Response::HTTP_OK, [], true);
         }
         return $this->json("Vous n'avez pas les autorisations pour voir le détail de cet utilisateur !", Response::HTTP_UNAUTHORIZED);
     }
@@ -66,6 +55,7 @@ class ApiUserController extends AbstractController
      * @param EntityManagerInterface $manager
      * @param SerializerInterface $serializer
      * @param UrlGeneratorInterface $urlGenerator
+     * @param ValidatorInterface $validator
      * @return JsonResponse
      */
     public function create(Request $request, EntityManagerInterface $manager, SerializerInterface $serializer, UrlGeneratorInterface $urlGenerator, ValidatorInterface $validator): JsonResponse
@@ -81,7 +71,7 @@ class ApiUserController extends AbstractController
         $manager->persist($user);
         $manager->flush();
         return new JsonResponse(
-            $serializer->serialize($user, "json", ["groups" => ['users:list', 'user:read']]),
+            $serializer->serialize($user, "json", SerializationContext::create()->setGroups(['Default', 'users:list', 'user:read'])),
             JsonResponse::HTTP_CREATED,
             ["Location" => $urlGenerator->generate("api_user_show", ["id" => $user->getid()])],
             true
