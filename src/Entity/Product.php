@@ -4,45 +4,34 @@ namespace App\Entity;
 
 use App\Repository\ProductRepository;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Serializer\Annotation\Groups;
-use JMS\Serializer\Annotation as Serializer;
 use Hateoas\Configuration\Annotation as Hateoas;
+use JMS\Serializer\Annotation as Serializer;
 use OpenApi\Annotations as OA;
+use JMS\Serializer\Annotation\Groups as Groups;
+use JMS\Serializer\Annotation\Exclude;
 
 /**
  * @Serializer\XmlRoot("Product")
+ * @Hateoas\Relation("self", href = "expr('/api/products/' ~ object.getId())")
  * @ORM\Entity(repositoryClass=ProductRepository::class)
- * @Hateoas\Relation(
- *     "self",
- *     href = @Hateoas\Route(
- *     "api_products",
- *     absolute = true
- *     )
- * )
- *
- * @Hateoas\Relation(
- *     "show",
- *     href = @Hateoas\Route(
- *     "api_products_show",
- *     parameters = { "id" = "expr(object.getId())" },
- *     absolute = true
- *     )
- * )
  */
 class Product
 {
     /**
+     * @Serializer\XmlAttribute
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      *
      * @OA\Property(description="Unique identifier of the product", type="integer")
+     *
+     * @Exclude
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"product:read"})
+     * @Groups({"product:read", "product:detail"})
      *
      * @OA\Property(description="denomination of the product", type="string")
      */
@@ -50,7 +39,7 @@ class Product
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"product:read"})
+     * @Groups({"product:read", "product:detail"})
      *
      * @OA\Property(description="Manufacturer of the product", type="string")
      */
@@ -58,7 +47,7 @@ class Product
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"product:read"})
+     * @Groups({"product:read", "product:detail"})
      *
      * @OA\Property(description="Processor of the product", type="string")
      */
@@ -66,7 +55,7 @@ class Product
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"product:read"})
+     * @Groups({"product:read", "product:detail"})
      *
      * @OA\Property(description="Color of the product", type="string")
      */
@@ -74,7 +63,7 @@ class Product
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"product:read"})
+     * @Groups({"product:read", "product:detail"})
      *
      * @OA\Property(description="Ram Memory of the product", type="string")
      */

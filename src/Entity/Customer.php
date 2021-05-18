@@ -6,9 +6,10 @@ use App\Repository\CustomerRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Serializer\Annotation\Groups;
 use OpenApi\Annotations as OA;
+use JMS\Serializer\Annotation\Groups as Groups;
+use JMS\Serializer\Annotation\Exclude;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @ORM\Entity(repositoryClass=CustomerRepository::class)
@@ -23,12 +24,13 @@ class Customer implements UserInterface
      * @ORM\Column(type="integer")
      *
      * @OA\Property(description="Unique identifier of the customer", type="integer")
+     * @Exclude
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"users:list"})
+     * @Groups({"Default","users:list"})
      *
      * @OA\Property(description="Username of the customer", type="string")
      */
@@ -36,7 +38,7 @@ class Customer implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"users:list"})
+     * @Groups({"Default","users:list"})
      *
      * @OA\Property(description="Email of the customer", type="email")
      */
@@ -58,7 +60,7 @@ class Customer implements UserInterface
 
     /**
      * @ORM\OneToMany(targetEntity=User::class, mappedBy="customer")
-     * @Groups({"users:list"})
+     * @Groups({"Default","users:list"})
      *
      * @OA\Property(description="Users of the customer")
      */
