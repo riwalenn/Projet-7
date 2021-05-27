@@ -3,29 +3,37 @@
 #    controller: App\Controller\DefaultController::index
 login:
   path: /api/login_check
+  methods: POST
+  controller: App\Controller\ApiSecurityController::login
 
 products:
   path: /api/products
+  methods: GET
   controller: App\Controller\ApiProductController::list
 
 product_detail:
   path: /api/products/{id}
+  methods: GET
   controller: App\Controller\ApiProductController::show
 
 users:
   path: /api/users
+  methods: GET
   controller: App\Controller\ApiUserController::list
 
 user_detail:
   path: /api/users/{id}
+  methods: GET
   controller: App\Controller\ApiUserController::show
 
 user_create:
   path: /api/users
+  methods: POST
   controller: App\Controller\ApiUserController::create
 
 user_delete:
   path: /api/users/{id}
+  methods: DELETE
   controller: App\Controller\ApiUserController::delete
 
 app.swagger_ui:

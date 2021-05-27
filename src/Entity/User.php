@@ -14,7 +14,10 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @Serializer\XmlRoot("User")
  * @Hateoas\Relation("self", href = "expr('/api/users/' ~ object.getId())")
+ * @Hateoas\Relation("delete", href = "expr('/api/users/' ~ object.getId())")
+ * @Hateoas\Relation("list")
  * @ORM\Entity(repositoryClass=UserRepository::class)
+ * @OA\Schema(title="User", description="User class")
  */
 class User
 {
@@ -24,7 +27,7 @@ class User
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      *
-     * @OA\Property(description="Unique identifier of the user", type="integer")
+     * @OA\Property(type="integer")
      * @Exclude
      */
     private $id;
@@ -34,7 +37,8 @@ class User
      * @Groups({"Default","user:read", "user:write"})
      *
      * @OA\Property(description="Name of the user", type="string")
-     * @Assert\Length(min=4, minMessage="Le nom doit au moins contenir {{ limit }} caractères")
+     * @Assert\Length(min=4, minMessage="Name must have {{ limit }} caracters")
+     * @Assert\NotBlank(message="Name is missing")
      */
     private $name;
 
@@ -43,7 +47,8 @@ class User
      * @Groups({"Default","user:read", "user:write"})
      *
      * @OA\Property(description="Firstname of the user", type="string")
-     * @Assert\Length(min=4, minMessage="Le prénom doit au moins contenir {{ limit }} caractères")
+     * @Assert\Length(min=4, minMessage="Firstname must have {{ limit }} caracters")
+     * @Assert\NotBlank(message="Firstname is missing")
      */
     private $firstName;
 
@@ -51,8 +56,8 @@ class User
      * @ORM\Column(type="string", length=255)
      * @Groups({"Default","user:read", "user:write"})
      *
-     * @OA\Property(description="Email of the user", type="email")
-     * @Assert\NotBlank(message="l'email ne peut être vide.")
+     * @OA\Property(type="email")
+     * @Assert\NotBlank(message="Email is missing")
      */
     private $email;
 

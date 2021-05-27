@@ -1,8 +1,8 @@
 security:
+    # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
     encoders:
         App\Entity\Customer:
             algorithm: bcrypt
-    # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
     providers:
         in_database:
             entity:
@@ -12,10 +12,6 @@ security:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
-        doc:
-            pattern: ^/api/doc
-            anonymous: true
-            security: false
         login:
             pattern: ^/api/login
             stateless: true
@@ -24,6 +20,9 @@ security:
                 check_path: /api/login_check
                 success_handler: lexik_jwt_authentication.handler.authentication_success
                 failure_handler: lexik_jwt_authentication.handler.authentication_failure
+        doc:
+            pattern: ^/api/doc
+            security: false
         api:
             pattern: ^/api
             stateless: true
@@ -41,4 +40,5 @@ security:
     # Note: Only the *first* access control that matches will be used
     access_control:
         - { path: ^/api/login_check, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api/doc, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
