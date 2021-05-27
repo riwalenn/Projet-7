@@ -8,9 +8,11 @@
         "ext-ctype": "*",
         "ext-iconv": "*",
         "ext-json": "*",
+        "composer/package-versions-deprecated": "1.11.99.1",
         "doctrine/annotations": "^1.12",
         "doctrine/doctrine-bundle": "^2.3",
         "doctrine/doctrine-migrations-bundle": "^3.0",
+        "doctrine/orm": "^2.8",
         "lexik/jwt-authentication-bundle": "^2.11",
         "nelmio/api-doc-bundle": "^4.2",
         "phpdocumentor/reflection-docblock": "^5.2",
@@ -23,11 +25,13 @@
         "symfony/http-client": "5.2.*",
         "symfony/property-access": "5.2.*",
         "symfony/property-info": "5.2.*",
+        "symfony/proxy-manager-bridge": "5.2.*",
         "symfony/security-bundle": "5.2.*",
         "symfony/serializer": "5.2.*",
         "symfony/validator": "5.2.*",
         "symfony/yaml": "5.2.*",
-        "willdurand/hateoas-bundle": "^2.2"
+        "willdurand/hateoas-bundle": "^2.2",
+        "zircote/swagger-php": "^3.2"
     },
     "config": {
         "optimize-autoloader": true,

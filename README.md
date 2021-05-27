@@ -14,12 +14,18 @@ You need a web development environment like Wampserver (for windows), MAMP (for 
 *   Clone the project code : "https://github.com/riwalenn/Projet-7.git"
 *   Go to the console and write "composer install" where you want to have the project
 *   Open the .env file and change the database connection values on line 32 like "DATABASE_URL=mysql://root:@127.0.0.1:3306/oc_projets_n7?serverVersion=5.7.19" for me.
+*   In the .env change the JWT_PASSPHRASE
 *   Return to the console and write "php bin/console doctrine:database:create"
 *   "php bin/console doctrine:migrations:migrate"
 *   To have some initial dataset : "php bin/console doctrine:fixtures:load"
+*   To Generate your keys, you will need OpenSsl
+*   Create a "jwt" folder in "config"
+*   Run "openssl genrsa -out config/jwt/private.pem 4096" in your terminal 
+*   Run "openssl rsa -pubout -in config/jwt/private.pem -out config/jwt/public.pem" in your terminal 
 *   Run the application with "php -S localhost:8000 -t public"
 
 ## Documentation
+* https://127.0.0.1:8000/api/doc
 
 ## Author
 *   **Riwalenn Bas** - *Blog* - [Riwalenn Bas](https://www.riwalennbas.com)

@@ -7,11 +7,12 @@ use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use JMS\Serializer\SerializerInterface;
 use JMS\Serializer\SerializationContext;
+use Nelmio\ApiDocBundle\Annotation\Model;
+use OpenApi\Annotations as OA;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
@@ -19,7 +20,20 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 class ApiUserController extends AbstractController
 {
     /**
-     * Route("/api/users", name="api_users", methods={"GET"})
+     * Return list Users of a Client
+     *
+     * @OA\Get(
+     *     path="/api/users",
+     *     summary="Get Users list of a Client",
+     *     @OA\Response(
+     *          response=200,
+     *     description="OK",
+     *     @OA\JsonContent(ref=@Model(type=User::class)),
+     *     ),
+     *     @OA\Response(response=400, description="Bad Request"),
+     *     @OA\Response(response=404, description="not found"),
+     * ),
+     * @OA\Tag(name="User")
      *
      * @param UserRepository $repository
      * @param SerializerInterface $serializer
@@ -32,7 +46,21 @@ class ApiUserController extends AbstractController
     }
 
     /**
-     * @Route("/api/users/{id}", name="api_user_show", methods={"GET"})
+     * Return User detail
+     *
+     * @OA\Get(
+     *     path="/api/users/{id}",
+     *     summary="Get Users detail",
+     *     @OA\Parameter(in="path", name="id", required=true, @OA\Schema(type="string"), @OA\Examples(example="int", value="1",summary="An int value")),
+     *     @OA\Response(
+     *          response=200,
+     *     description="OK",
+     *     @OA\JsonContent(ref=@Model(type=User::class)),
+     *     ),
+     *     @OA\Response(response=400, description="Bad Request"),
+     *     @OA\Response(response=404, description="Not Found"),
+     * ),
+     * @OA\Tag(name="User")
      *
      * @param User $user
      * @param UserRepository $repository
@@ -49,7 +77,22 @@ class ApiUserController extends AbstractController
     }
 
     /**
-     * @Route("/api/users", name="api_user_create", methods={"POST"})
+     * Create one user of a Client
+     *
+     * @OA\Post(
+     *     path="/api/users/{id}",
+     *     summary="Get Users detail",
+     *     @OA\Parameter(in="path", name="id", required=true, @OA\Schema(type="string"), @OA\Examples(example="int", value="1",summary="An int value")),
+     *     @OA\Response(
+     *          response=201,
+     *     description="OK",
+     *     @OA\JsonContent(ref=@Model(type=User::class)),
+     *     ),
+     *     @OA\Response(response=400, description="Bad Request"),
+     *     @OA\Response(response=404, description="Not Found"),
+     *     @OA\Response(response=409, description="Conflict, already exist"),
+     * ),
+     * @OA\Tag(name="User")
      *
      * @param Request $request
      * @param EntityManagerInterface $manager
@@ -73,14 +116,27 @@ class ApiUserController extends AbstractController
         return new JsonResponse(
             $serializer->serialize($user, "json", SerializationContext::create()->setGroups(['Default', 'users:list', 'user:read'])),
             JsonResponse::HTTP_CREATED,
-            ["Location" => $urlGenerator->generate("api_user_show", ["id" => $user->getid()])],
+            ["Location" => $urlGenerator->generate("user_detail", ["id" => $user->getid()])],
             true
         );
     }
 
     /**
-     * @Route("/api/users/{id}", name="api_user_delete", methods={"DELETE"})
+     * Delete one User of a Client
      *
+     * @OA\Delete(
+     *     path="/api/users/{id}",
+     *     summary="Get Users detail",
+     *     @OA\Parameter(in="path", name="id", required=true, @OA\Schema(type="string"), @OA\Examples(example="int", value="1",summary="An int value")),
+     *     @OA\Response(
+     *          response=204,
+     *     description="OK",
+     *     @OA\JsonContent(ref=@Model(type=User::class)),
+     *     ),
+     *     @OA\Response(response=400, description="Bad Request"),
+     *     @OA\Response(response=404, description="Not Found"),
+     * ),
+     * @OA\Tag(name="User")
      * @param User $user
      * @param EntityManagerInterface $manager
      * @return JsonResponse
