@@ -6,7 +6,6 @@ use App\Entity\Customer;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use OpenApi\Annotations as OA;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
 
 class ApiSecurityController extends AbstractController
 {
@@ -27,5 +26,5 @@ class ApiSecurityController extends AbstractController
      * )
      * @OA\Tag(name="Login")
      */
-   public function login(Request $request) {}
+   public function login() {}
 }

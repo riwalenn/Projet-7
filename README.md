@@ -25,7 +25,7 @@ You need a web development environment like Wampserver (for windows), MAMP (for 
 *   Run the application with "php -S localhost:8000 -t public"
 
 ## Documentation
-* https://127.0.0.1:8000/api/doc
+*   https://127.0.0.1:8000/api/doc
 
 ## Author
 *   **Riwalenn Bas** - *Blog* - [Riwalenn Bas](https://www.riwalennbas.com)
