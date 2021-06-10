@@ -67,10 +67,10 @@ class ApiProductController extends AbstractController
     public function show(Product $product, SerializerInterface $serializer): JsonResponse
     {
         $jsonContent = $serializer->serialize($product, 'json', SerializationContext::create()->setGroups(["Default", "product:detail"]));
-        if (!empty($jsonContent)) {
-            return new JsonResponse($jsonContent, Response::HTTP_OK, [], true);
-        } else {
+        if (empty($jsonContent)) {
             throw new NotFoundHttpException();
         }
+
+        return new JsonResponse($jsonContent, Response::HTTP_OK, [], true);
     }
 }

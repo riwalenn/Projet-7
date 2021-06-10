@@ -14,7 +14,6 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
@@ -74,12 +73,11 @@ class ApiUserController extends AbstractController
      */
     public function show(User $user, UserRepository $repository, SerializerInterface $serializer): JsonResponse
     {
-        if ($user->getCustomer() == $this->getUser()) {
-            $jsonContent = $serializer->serialize($repository->findBy(['id' => $user->getId()]), 'json', SerializationContext::create()->setGroups(['Default', 'users:list']));
-            return new JsonResponse($jsonContent, Response::HTTP_OK, [], true);
-        } else {
+        if ($user->getCustomer() != $this->getUser()) {
             throw new AccessDeniedHttpException("Forbidden - You're not allowed to see that user.");
         }
+        $jsonContent = $serializer->serialize($repository->findBy(['id' => $user->getId()]), 'json', SerializationContext::create()->setGroups(['Default', 'users:list']));
+        return new JsonResponse($jsonContent, Response::HTTP_OK, [], true);
     }
 
     /**
@@ -150,12 +148,11 @@ class ApiUserController extends AbstractController
      */
     public function delete(User $user, EntityManagerInterface $manager)
     {
-        if ($user->getCustomer() == $this->getUser()) {
-            $manager->remove($user);
-            $manager->flush();
-            return $this->json("La donnée a bien été supprimée", Response::HTTP_OK);
-        } else {
+        if ($user->getCustomer() != $this->getUser()) {
             throw new AccessDeniedHttpException("Forbidden - You're not allowed to delete that user.");
         }
+        $manager->remove($user);
+        $manager->flush();
+        return $this->json("La donnée a bien été supprimée", Response::HTTP_OK);
     }
 }
