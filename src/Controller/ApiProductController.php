@@ -11,6 +11,7 @@ use OpenApi\Annotations as OA;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 
 class ApiProductController extends AbstractController
@@ -26,8 +27,9 @@ class ApiProductController extends AbstractController
      *     description="OK",
      *     @OA\JsonContent(ref=@Model(type=Product::class)),
      *     ),
-     *     @OA\Response(response=400, description="Bad Request"),
+     *     @OA\Response(response=401, description="Unauthorized"),
      *     @OA\Response(response=404, description="not found"),
+     *     @OA\Response(response=500, description="Internal error"),
      * ),
      * @OA\Tag(name="Product")
      * @param ProductRepository $repo
@@ -52,8 +54,9 @@ class ApiProductController extends AbstractController
      *     description="OK",
      *     @OA\JsonContent(ref=@Model(type=Product::class)),
      *     ),
-     *     @OA\Response(response=400, description="Bad Request"),
-     *     @OA\Response(response=404, description="Not Found"),
+     *     @OA\Response(response=401, description="Unauthorized"),
+     *     @OA\Response(response=404, description="not found"),
+     *     @OA\Response(response=500, description="Internal error"),
      * ),
      *
      * @OA\Tag(name="Product")
@@ -64,6 +67,10 @@ class ApiProductController extends AbstractController
     public function show(Product $product, SerializerInterface $serializer): JsonResponse
     {
         $jsonContent = $serializer->serialize($product, 'json', SerializationContext::create()->setGroups(["Default", "product:detail"]));
+        if (empty($jsonContent)) {
+            throw new NotFoundHttpException();
+        }
+
         return new JsonResponse($jsonContent, Response::HTTP_OK, [], true);
     }
 }

@@ -13,6 +13,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
@@ -30,8 +31,9 @@ class ApiUserController extends AbstractController
      *     description="OK",
      *     @OA\JsonContent(ref=@Model(type=User::class)),
      *     ),
-     *     @OA\Response(response=400, description="Bad Request"),
+     *     @OA\Response(response=401, description="Unauthorized"),
      *     @OA\Response(response=404, description="not found"),
+     *     @OA\Response(response=500, description="Internal error"),
      * ),
      * @OA\Tag(name="User")
      *
@@ -57,8 +59,10 @@ class ApiUserController extends AbstractController
      *     description="OK",
      *     @OA\JsonContent(ref=@Model(type=User::class)),
      *     ),
-     *     @OA\Response(response=400, description="Bad Request"),
-     *     @OA\Response(response=404, description="Not Found"),
+     *     @OA\Response(response=401, description="Unauthorized"),
+     *     @OA\Response(response=403, description="Forbidden"),
+     *     @OA\Response(response=404, description="not found"),
+     *     @OA\Response(response=500, description="Internal error"),
      * ),
      * @OA\Tag(name="User")
      *
@@ -69,11 +73,11 @@ class ApiUserController extends AbstractController
      */
     public function show(User $user, UserRepository $repository, SerializerInterface $serializer): JsonResponse
     {
-        if ($user->getCustomer() == $this->getUser()) {
-            $jsonContent = $serializer->serialize($repository->findBy(['id' => $user->getId()]), 'json', SerializationContext::create()->setGroups(['Default', 'users:list']));
-            return new JsonResponse($jsonContent, Response::HTTP_OK, [], true);
+        if ($user->getCustomer() != $this->getUser()) {
+            throw new AccessDeniedHttpException("Forbidden - You're not allowed to see that user.");
         }
-        return $this->json("Vous n'avez pas les autorisations pour voir le détail de cet utilisateur !", Response::HTTP_UNAUTHORIZED);
+        $jsonContent = $serializer->serialize($repository->findBy(['id' => $user->getId()]), 'json', SerializationContext::create()->setGroups(['Default', 'users:list']));
+        return new JsonResponse($jsonContent, Response::HTTP_OK, [], true);
     }
 
     /**
@@ -88,9 +92,8 @@ class ApiUserController extends AbstractController
      *     description="OK",
      *     @OA\JsonContent(ref=@Model(type=User::class)),
      *     ),
-     *     @OA\Response(response=400, description="Bad Request"),
-     *     @OA\Response(response=404, description="Not Found"),
-     *     @OA\Response(response=409, description="Conflict, already exist"),
+     *     @OA\Response(response=401, description="Unauthorized"),
+     *     @OA\Response(response=500, description="Internal error"),
      * ),
      * @OA\Tag(name="User")
      *
@@ -130,11 +133,13 @@ class ApiUserController extends AbstractController
      *     @OA\Parameter(in="path", name="id", required=true, @OA\Schema(type="string"), @OA\Examples(example="int", value="1",summary="An int value")),
      *     @OA\Response(
      *          response=204,
-     *     description="OK",
+     *     description="Success",
      *     @OA\JsonContent(ref=@Model(type=User::class)),
      *     ),
-     *     @OA\Response(response=400, description="Bad Request"),
-     *     @OA\Response(response=404, description="Not Found"),
+     *     @OA\Response(response=401, description="Unauthorized"),
+     *     @OA\Response(response=403, description="Forbidden"),
+     *     @OA\Response(response=404, description="not found"),
+     *     @OA\Response(response=500, description="Internal error"),
      * ),
      * @OA\Tag(name="User")
      * @param User $user
@@ -143,11 +148,11 @@ class ApiUserController extends AbstractController
      */
     public function delete(User $user, EntityManagerInterface $manager)
     {
-        if ($user->getCustomer() == $this->getUser()) {
-            $manager->remove($user);
-            $manager->flush();
-            return $this->json("La donnée a bien été supprimée", Response::HTTP_OK);
+        if ($user->getCustomer() != $this->getUser()) {
+            throw new AccessDeniedHttpException("Forbidden - You're not allowed to delete that user.");
         }
-        return $this->json("Vous n'avez pas les autorisations pour supprimer cet utilisateur !", Response::HTTP_METHOD_NOT_ALLOWED);
+        $manager->remove($user);
+        $manager->flush();
+        return $this->json("La donnée a bien été supprimée", Response::HTTP_OK);
     }
 }
