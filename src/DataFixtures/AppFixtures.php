@@ -41,7 +41,8 @@ class AppFixtures extends Fixture
             $customer = new Customer();
             $customer->setUsername($provider)
                 ->setPassword($this->passwordEncoder->encodePassword($customer, $provider))
-                ->setEmail($provider . "@" . $provider . ".com");
+                ->setEmail($provider . "@" . $provider . ".com")
+                ->setRoles(["USER"]);
 
             $this->manager->persist($customer);
         }
@@ -49,7 +50,8 @@ class AppFixtures extends Fixture
         $customer = new Customer();
         $customer->setUsername("orange")
             ->setPassword($this->passwordEncoder->encodePassword($customer, "orange"))
-            ->setEmail("orange@gmail.com");
+            ->setEmail("orange@gmail.com")
+            ->setRoles(["USER"]);
 
         $this->manager->persist($customer);
         $this->manager->flush();
