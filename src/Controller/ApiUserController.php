@@ -84,9 +84,9 @@ class ApiUserController extends AbstractController
      * Create one user of a Client
      *
      * @OA\Post(
-     *     path="/api/users/{id}",
+     *     path="/api/users",
      *     summary="Get Users detail",
-     *     @OA\Parameter(in="path", name="id", required=true, @OA\Schema(type="string"), @OA\Examples(example="int", value="1",summary="An int value")),
+     *     @OA\RequestBody(description="Create new user", required=true, @OA\JsonContent(ref=@Model(type=User::class))),
      *     @OA\Response(
      *          response=201,
      *     description="OK",

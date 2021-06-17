@@ -4,7 +4,6 @@
 login:
   path: /api/login_check
   methods: POST
-  controller: App\Controller\ApiSecurityController::login
 
 products:
   path: /api/products

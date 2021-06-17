@@ -46,9 +46,9 @@ class User
      * @ORM\Column(type="string", length=255)
      * @Groups({"Default","user:read", "user:write"})
      *
-     * @OA\Property(description="Firstname of the user", type="string")
-     * @Assert\Length(min=4, minMessage="Firstname must have {{ limit }} caracters")
-     * @Assert\NotBlank(message="Firstname is missing")
+     * @OA\Property(description="firstName of the user", type="string")
+     * @Assert\Length(min=4, minMessage="firstName must have {{ limit }} caracters")
+     * @Assert\NotBlank(message="firstName is missing")
      */
     private $firstName;
 
@@ -56,7 +56,7 @@ class User
      * @ORM\Column(type="string", length=255)
      * @Groups({"Default","user:read", "user:write"})
      *
-     * @OA\Property(type="email")
+     * @OA\Property(type="string")
      * @Assert\NotBlank(message="Email is missing")
      */
     private $email;
@@ -75,24 +75,24 @@ class User
         return $this->id;
     }
 
-    public function getname(): ?string
+    public function getName(): ?string
     {
         return $this->name;
     }
 
-    public function setname(string $name): self
+    public function setName(string $name): self
     {
         $this->name = $name;
 
         return $this;
     }
 
-    public function getfirstName(): ?string
+    public function getFirstName(): ?string
     {
         return $this->firstName;
     }
 
-    public function setfirstName(string $firstName): self
+    public function setFirstName(string $firstName): self
     {
         $this->firstName = $firstName;
 

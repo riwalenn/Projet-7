@@ -6,8 +6,6 @@ nelmio_api_doc:
         servers:
             - url: https://127.0.0.1:8000/
               description: API over HTTPS
-            - url: http://127.0.0.1:8000/
-              description: API over HTTP
         info:
             title: API Bilemo
             description: Jeux de données BileMo (produits + utilisateurs liés au client)
