@@ -18,20 +18,3 @@ nelmio_api_doc:
                     bearerFormat: JWT
         security:
             - Bearer: []
-        paths:
-            /api/login_check:
-                post:
-                    summary: get jwt
-                    parameters:
-                        - in: path
-                          name: user
-                          description: user credentials
-                          schema:
-                              type: object
-                              required:
-                                  - userName
-                              properties:
-                                  username:
-                                      type: string
-                                  password:
-                                      type: string
