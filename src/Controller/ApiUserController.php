@@ -132,7 +132,7 @@ class ApiUserController extends AbstractController
      *     summary="Get Users detail",
      *     @OA\Parameter(in="path", name="id", required=true, @OA\Schema(type="string"), @OA\Examples(example="int", value="1",summary="An int value")),
      *     @OA\Response(
-     *          response=204,
+     *          response=200,
      *     description="Success",
      *     @OA\JsonContent(ref=@Model(type=User::class)),
      *     ),
