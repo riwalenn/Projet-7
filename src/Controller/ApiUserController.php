@@ -92,6 +92,7 @@ class ApiUserController extends AbstractController
      *     description="OK",
      *     @OA\JsonContent(ref=@Model(type=User::class)),
      *     ),
+     *     @OA\Response(response=400, description="Bad Request"),
      *     @OA\Response(response=401, description="Unauthorized"),
      *     @OA\Response(response=500, description="Internal error"),
      * ),
