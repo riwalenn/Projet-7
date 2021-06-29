@@ -7,6 +7,7 @@ use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use JMS\Serializer\SerializerInterface;
 use JMS\Serializer\SerializationContext;
+use Knp\Component\Pager\PaginatorInterface;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use OpenApi\Annotations as OA;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -39,11 +40,14 @@ class ApiUserController extends AbstractController
      *
      * @param UserRepository $repository
      * @param SerializerInterface $serializer
+     * @param Request $request
+     * @param PaginatorInterface $paginator
      * @return JsonResponse
      */
-    public function list(UserRepository $repository, SerializerInterface $serializer): JsonResponse
+    public function list(UserRepository $repository, SerializerInterface $serializer, Request $request, PaginatorInterface $paginator): JsonResponse
     {
-        $jsonContent = $serializer->serialize($repository->findBy(["customer" => $this->getUser()]), 'json', SerializationContext::create()->setGroups(['Default', 'users:list']));
+        $liste = $paginator->paginate($repository->findBy(["customer" => $this->getUser()]), $request->query->getInt('page', 1), 5);
+        $jsonContent = $serializer->serialize($liste, 'json', SerializationContext::create()->setGroups(['Default', 'users:list']));
         return new JsonResponse($jsonContent, Response::HTTP_OK, [], true);
     }
 
