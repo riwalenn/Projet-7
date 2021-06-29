@@ -133,7 +133,7 @@ class ApiUserController extends AbstractController
      *     summary="Get Users detail",
      *     @OA\Parameter(in="path", name="id", required=true, @OA\Schema(type="string"), @OA\Examples(example="int", value="1",summary="An int value")),
      *     @OA\Response(
-     *          response=200,
+     *          response=204,
      *     description="Success",
      *     @OA\JsonContent(ref=@Model(type=User::class)),
      *     ),
@@ -154,6 +154,6 @@ class ApiUserController extends AbstractController
         }
         $manager->remove($user);
         $manager->flush();
-        return $this->json("La donnée a bien été supprimée", Response::HTTP_OK);
+        return $this->json("", Response::HTTP_NO_CONTENT);
     }
 }
