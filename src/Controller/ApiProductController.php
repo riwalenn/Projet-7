@@ -6,10 +6,12 @@ use App\Entity\Product;
 use App\Repository\ProductRepository;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\SerializerInterface;
+use Knp\Component\Pager\PaginatorInterface;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use OpenApi\Annotations as OA;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -34,11 +36,14 @@ class ApiProductController extends AbstractController
      * @OA\Tag(name="Product")
      * @param ProductRepository $repo
      * @param SerializerInterface $serializer
+     * @param Request $request
+     * @param PaginatorInterface $paginator
      * @return JsonResponse
      */
-   public function list(ProductRepository $repo, SerializerInterface $serializer): JsonResponse
+   public function list(ProductRepository $repo, SerializerInterface $serializer, Request $request, PaginatorInterface $paginator): JsonResponse
    {
-       $jsonContent = $serializer->serialize($repo->findAll(), 'json', SerializationContext::create()->setGroups(["Default", "product:read"]));
+       $liste = $paginator->paginate($repo->findAll(), $request->query->getInt('page', 1), 5);
+       $jsonContent = $serializer->serialize($liste, 'json', SerializationContext::create()->setGroups(["Default", "product:read"]));
        return new JsonResponse($jsonContent, Response::HTTP_OK, [], true);
    }
 
